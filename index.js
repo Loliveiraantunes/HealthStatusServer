@@ -1,9 +1,11 @@
-const express = require('express');
-const app = express();
+const exprss = require('express');
+const app = exprss();
 const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
-const io = new Server(server,{
+
+//Socket
+const io = new Server(server, {
   cors: {
     origin: "*"
   }
@@ -12,7 +14,7 @@ const io = new Server(server,{
 io.on('connection', (socket) => {
   console.log('A user connected');
 
-  socket.on('room', function(room) {
+  socket.on('room', function (room) {
     socket.join(room);
   });
 
@@ -22,11 +24,28 @@ io.on('connection', (socket) => {
 
   //{ "device": "teste","value" : 60, "code":"frequency" }
   socket.on('message', (data) => {
-    console.log('Received message:',data.code, data);
-    io.to(data.device).emit(data.code, data); 
+    console.log('Received message:', data.code, data);
+    io.to(data.device).emit(data.code, data);
   });
 });
 
-server.listen(3000, () => {
-  console.log('listening on *:3000');
+//Request Config
+app.use(exprss.json());
+app.use(exprss.urlencoded({ extended: false }));
+
+//Route Prefixes
+const indexRouter = require('./src/routes/index');
+const userRouter = require('./src/routes/user');
+
+app.use("/", indexRouter);
+app.use("/user", userRouter);
+
+//Database Connection
+const mongoose = require('mongoose');
+mongoose.connect('mongodb+srv://iot:iot@cluster0.mwy3hci.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
+.then(() => {
+  server.listen(3000, () => {
+    console.log('listening on *:3000');
+  });
 });
+
