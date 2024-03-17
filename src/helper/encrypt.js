@@ -1,9 +1,6 @@
 const bcrypt = require('bcrypt');
 
-exports.cryptPassword = (password) =>
-bcrypt.genSalt(10)
-.then((salt => bcrypt.hash(password, salt)))
-.then(hash => hash),
+exports.cryptPassword = (password) => bcrypt.hash(password, 10)
 
 exports.comparePassword = (password, hashPassword) =>
     bcrypt.compare(password, hashPassword)

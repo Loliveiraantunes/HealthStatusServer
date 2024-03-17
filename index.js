@@ -36,10 +36,11 @@ app.use(exprss.urlencoded({ extended: false }));
 //Route Prefixes
 const indexRouter = require('./src/routes/index');
 const userRouter = require('./src/routes/user');
+const authRouter = require('./src/routes/auth');
 
 app.use("/", indexRouter);
 app.use("/user", userRouter);
-
+app.use("/auth", authRouter);
 //Database Connection
 const mongoose = require('mongoose');
 mongoose.connect('mongodb+srv://iot:iot@cluster0.mwy3hci.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
